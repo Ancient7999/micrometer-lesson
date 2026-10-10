@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Micrometer · Diameter, volume and density of a sphere</title>
+<meta name="description" content="Micrometer screw gauge practical: measure the diameter of a sphere, then find its volume and density. Aim, theory, method, worked example, MCQs and an immersive practical.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23eceef1'/%3E%3Cpath d='M5 9v12a6 6 0 0 0 6 6h8V16' fill='none' stroke='%232a2f36' stroke-width='3.2' stroke-linecap='round'/%3E%3Crect x='5' y='7' width='4' height='5' fill='%238d97a3'/%3E%3Crect x='14' y='8' width='7' height='3' fill='%238d97a3'/%3E%3Crect x='21' y='6' width='7' height='7' rx='1' fill='%23e8620c'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/Archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/PublicSans-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<div id="cursor" aria-hidden="true">
+  <svg viewBox="-16 -10 52 32" width="52" height="32"><path class="cu-frame" d="M-9 -1 v9 a7 7 0 0 0 7 7 h15 v-11"/><rect class="cu-anvil" x="-8" y="-2" width="6" height="4" rx=".6"/><g id="cu-sp"><rect class="cu-spindle" x="2" y="-1.8" width="12" height="3.6" rx=".6"/><rect class="cu-sleeve" x="13" y="-2.8" width="8" height="5.6" rx=".8"/><rect class="cu-thimble" x="20" y="-3.8" width="9" height="7.6" rx="1.2"/><g class="cu-ticks"><line x1="20.5" y1="-2" x2="22.5" y2="-2"/><line x1="20.5" y1="0" x2="23.5" y2="0"/><line x1="20.5" y1="2" x2="22.5" y2="2"/></g><rect class="cu-ratchet" x="29" y="-2.6" width="4" height="5.2" rx="1"/></g><circle class="cu-dot" cx="0" cy="0" r="1"/></svg>
+</div>
+
+<div class="app">
+  <aside class="rail" aria-label="Lesson progress">
+    <div class="rail-brand">
+      <div class="rail-eyebrow">Physics practical</div>
+      <div class="rail-title">Micrometer</div>
+      <div class="rail-sub">diameter, volume, density</div>
+    </div>
+    <div class="rail-body">
+      <div class="rail-gauge" aria-hidden="true"><div class="rail-fill" id="rail-fill"></div><div class="rail-thimble" id="rail-thimble"><i></i><i></i><i></i></div></div>
+      <nav class="rail-nav" id="rail-nav" aria-label="Sections"></nav>
+    </div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="stage-top">
+      <button type="button" class="btn-prev" id="btn-prev">← Prev</button>
+    </div>
+
+    <!-- ============ AIM & OUTCOMES ============ -->
+    <section class="view" id="view-aim" data-title="Aim &amp; outcomes">
+      <div class="sheet">
+        <p class="disclaimer">This lesson is an AI-assisted introduction, not scientific-grade material. It is meant to build a working picture before the lecture and the lab session; the lab manual and the instructor take priority where they differ.</p>
+        <p class="eyebrow">Physics practical · Micrometer screw gauge</p>
+        <h1 class="page-h">Diameter, volume and density of a sphere</h1>
+        <figure class="aim-figure">
+          <svg id="aim-hero" viewBox="0 0 760 330" role="img" aria-label="A micrometer screw gauge holding a steel ball between its anvil and spindle"></svg>
+        </figure>
+        <div class="aim-block">
+          <div class="aim-label">Aim</div>
+          <p class="aim-text">To measure the diameter, volume and density of a given sphere.</p>
+        </div>
+        <h2 class="sub-h">Learning outcomes</h2>
+        <p class="lede">By the end of this session, students should be able to:</p>
+        <ul class="outcomes">
+          <li>Use a micrometer to measure the diameter of solid objects.</li>
+          <li>Use a balance to measure mass.</li>
+          <li>Determine the density of a solid sphere by finding its volume and mass.</li>
+        </ul>
+        <h2 class="sub-h">Why it matters in medicine</h2>
+        <div class="med-row">
+          <div class="med"><svg viewBox="0 0 80 80" aria-hidden="true" class="med-ic" id="med-ic-1"></svg><div><h3>Very small thicknesses</h3><p>Surgical needles, sutures and membranes are specified to hundredths of a millimetre, the scale a micrometer reads.</p></div></div>
+          <div class="med"><svg viewBox="0 0 80 80" aria-hidden="true" class="med-ic" id="med-ic-2"></svg><div><h3>Tissue and cell layers</h3><p>Biomedical labs measure the thickness of tissue sections and cell layers with the same screw principle.</p></div></div>
+          <div class="med"><svg viewBox="0 0 80 80" aria-hidden="true" class="med-ic" id="med-ic-3"></svg><div><h3>Medical devices</h3><p>Dental implants, crowns and other devices are made and checked to precise sizes, often with a micrometer.</p></div></div>
+        </div>
+        <div class="page-end"><button type="button" class="btn-next" data-next>Next →</button></div>
+      </div>
+    </section>
+
+    <!-- ============ THEORY ============ -->
+    <section class="view" id="view-theory" data-title="Theory">
+      <div class="sheet">
+        <h1 class="page-h">Theory</h1>
+        <p class="lede">A <strong>micrometer screw gauge</strong> turns rotation into a very small, very even forward movement. One turn of the thimble moves the spindle by a fixed distance, and a scale around the thimble splits that turn into equal parts, so lengths can be read to hundredths of a millimetre.</p>
+
+        <h2 class="sub-h">The parts</h2>
+        <div class="parts-wrap"><svg id="parts-svg" viewBox="0 0 900 400" role="img" aria-label="Labelled micrometer: frame, anvil, spindle, sleeve with main scale, thimble with head scale, ratchet and lock"></svg></div>
+
+        <div class="terms">
+          <div class="term"><div class="term-k">Pitch</div><p>The distance the spindle moves in <strong>one full turn</strong> of the thimble. Pitch = distance moved ÷ number of turns.</p></div>
+          <div class="term"><div class="term-k">Head scale</div><p>The thimble's circular scale, divided into equal parts (here <strong>50</strong>).</p></div>
+          <div class="term"><div class="term-k">Least count</div><p>The smallest length the gauge can read: one head-scale division.</p></div>
+          <div class="term"><div class="term-k">Datum line</div><p>The horizontal line on the sleeve. The head scale is read where it crosses this line.</p></div>
+        </div>
+
+        <div class="lc-card">
+          <div class="lc-eq">L.C = <span class="frac"><span>pitch</span><span>number of head-scale divisions</span></span></div>
+          <div class="lc-eq dim">= <span class="frac"><span>0.5 mm</span><span>50</span></span> = <b>0.01 mm</b></div>
+          <p>Here two full turns move the spindle 1 mm, so the pitch is 0.5 mm. Each head-scale division is 0.5 ÷ 50 = 0.01 mm.</p>
+        </div>
+
+        <h2 class="sub-h">Reading the two scales</h2>
+        <div class="read-grid">
+          <div class="rd"><div class="rd-k">PSR · pitch scale reading</div><p>On the sleeve, at the edge of the thimble. Whole millimetres are marked <strong>above</strong> the datum line and half millimetres <strong>below</strong> it. Count the last mark the thimble has uncovered, adding 0.5 mm if a half-mark is showing past the last whole mark.</p></div>
+          <div class="rd"><div class="rd-k">HSR · head scale reading</div><p>The thimble division that lines up with the datum line, counted in <strong>divisions</strong>. Multiply by the least count to turn it into millimetres.</p></div>
+        </div>
+        <div class="eq-hero">d = PSR + (HSR × L.C)</div>
+
+        <div class="reader">
+          <div class="reader-view"><svg id="read-svg" viewBox="0 0 600 300" role="img" aria-label="Close-up of the sleeve and thimble scales"></svg></div>
+          <div class="reader-side">
+            <div class="ctl">
+              <label for="read-sl"><span>Spindle opening</span></label>
+              <input type="range" id="read-sl" min="0" max="25" step="0.01" value="7.73">
+            </div>
+            <div class="step-btns" role="group" aria-label="Turn the thimble">
+              <button type="button" class="btn-quiet sm" data-turn="-0.5">− 1 turn</button>
+              <button type="button" class="btn-quiet sm" data-turn="-0.01">− 1 div</button>
+              <button type="button" class="btn-quiet sm" data-turn="0.01">+ 1 div</button>
+              <button type="button" class="btn-quiet sm" data-turn="0.5">+ 1 turn</button>
+            </div>
+            <div class="read-out" id="read-out" aria-live="polite"></div>
+            <div class="read-actions">
+              <button type="button" class="btn-main" id="read-quiz">Try a reading</button>
+              <button type="button" class="btn-quiet" id="read-show">Show the answer</button>
+            </div>
+          </div>
+        </div>
+        <p class="note">One full turn uncovers one more half-millimetre mark; one division moves the spindle 0.01 mm.</p>
+
+        <h2 class="sub-h">Zero error</h2>
+        <p class="lede">With the jaws closed gently (by the ratchet) and nothing between them, the sleeve should read 0 and the thimble's 0 should sit on the datum line. If it does, the zero error is <strong>nil</strong>. If not, the closed reading is the zero error, and it is removed from every reading.</p>
+        <div class="zero-row">
+          <figure class="zero-card"><svg id="zero-a" viewBox="0 0 600 300" role="img" aria-label="Zero error nil"></svg><figcaption><b>Nil</b><span>0 sits on the datum line.</span></figcaption></figure>
+          <figure class="zero-card"><svg id="zero-b" viewBox="0 0 600 300" role="img" aria-label="Positive zero error"></svg><figcaption><b>Positive, + 0.03 mm</b><span>0 is below the datum line. Corrected = observed − 0.03 mm.</span></figcaption></figure>
+          <figure class="zero-card"><svg id="zero-c" viewBox="0 0 600 300" role="img" aria-label="Negative zero error"></svg><figcaption><b>Negative, − 0.02 mm</b><span>0 is above the datum line. Corrected = observed + 0.02 mm.</span></figcaption></figure>
+        </div>
+        <p class="eq-note">corrected reading = observed reading − zero error</p>
+
+        <div class="two-notes">
+          <div class="side-note"><div class="sn-k">Use the ratchet</div><p>Turning the thimble hard can squeeze the object and strain the screw, so the reading comes out too small. The ratchet at the end slips with a click once the spindle touches, so every reading is taken with the same light pressure.</p></div>
+          <div class="side-note"><div class="sn-k">Mean of five</div><p>A real sphere is never perfectly round, and a single reading carries reading error. Five readings at different positions, averaged, give a better diameter: mean d = (d₁ + d₂ + d₃ + d₄ + d₅) ÷ 5.</p></div>
+        </div>
+
+        <h2 class="sub-h">From diameter to density</h2>
+        <div class="vd-row">
+          <div class="vd"><div class="vd-eq">V = <span class="frac"><span>4</span><span>3</span></span>π<span class="paren">(</span><span class="frac"><span>d</span><span>2</span></span><span class="paren">)</span><sup>3</sup></div><p>Volume of a sphere, with r = d/2. Put d in <strong>cm</strong> (mm ÷ 10) to get V in cm³.</p></div>
+          <div class="vd"><div class="vd-eq">ρ = <span class="frac"><span>m</span><span>V</span></span></div><p>Density: mass in g over volume in cm³, giving g/cm³.</p></div>
+        </div>
+        <div class="page-end"><button type="button" class="btn-next" data-next>Next →</button></div>
+      </div>
+    </section>
+
+    <!-- ============ METHOD ============ -->
+    <section class="view" id="view-method" data-title="Method">
+      <div class="sheet wide">
+        <h1 class="page-h">Method</h1>
+        <h2 class="sub-h first">Apparatus</h2>
+        <div class="app-grid" id="app-grid"></div>
+
+        <h2 class="sub-h">Steps</h2>
+        <div class="method-wrap">
+          <ol class="steps" id="steps">
+            <li><button type="button" class="step" aria-pressed="true"><span class="sn">1</span><span>Find the least count: L.C = pitch ÷ number of head-scale divisions = 0.01 mm.</span></button></li>
+            <li><button type="button" class="step"><span class="sn">2</span><span>Bring the spindle up to the anvil (stud) with the ratchet and check the zero. With no zero error, record "zero error nil".</span></button></li>
+            <li><button type="button" class="step"><span class="sn">3</span><span>Hold the sphere between the anvil and the spindle and close with the ratchet until it clicks.</span></button></li>
+            <li><button type="button" class="step"><span class="sn">4</span><span>Count the marks uncovered on the pitch scale: this is the PSR, in mm.</span></button></li>
+            <li><button type="button" class="step"><span class="sn">5</span><span>Note the head-scale division that lines up with the datum line: this is the HSR.</span></button></li>
+            <li><button type="button" class="step"><span class="sn">6</span><span>Total reading d = PSR + (HSR × L.C), then apply any zero correction.</span></button></li>
+            <li><button type="button" class="step"><span class="sn">7</span><span>Take five readings, turning the sphere to a new position each time, and find the mean diameter.</span></button></li>
+            <li><button type="button" class="step"><span class="sn">8</span><span>Measure the mass of the sphere on the balance.</span></button></li>
+            <li><button type="button" class="step"><span class="sn">9</span><span>Calculate the volume and the density.</span></button></li>
+          </ol>
+          <div class="step-view">
+            <div class="step-fig" id="step-fig"></div>
+            <p class="step-cap" id="step-cap"></p>
+          </div>
+        </div>
+
+        <aside class="tips">
+          <div class="tips-label">Good practice</div>
+          <ul>
+            <li><strong>Ratchet for the last turn.</strong> Spin the thimble to get close, then finish with the ratchet until it clicks two or three times.</li>
+            <li><strong>Look straight at the scale.</strong> Read the datum line square-on to avoid parallax.</li>
+            <li><strong>Watch the half-millimetre marks.</strong> The marks below the datum line add 0.5 mm. Missing one makes the reading 0.5 mm too small.</li>
+            <li><strong>Lock before reading.</strong> The lock stops the spindle moving while the scales are read.</li>
+            <li><strong>Clean jaws, clean sphere.</strong> Dust or grease between the faces adds to the reading.</li>
+          </ul>
+        </aside>
+        <div class="page-end"><button type="button" class="btn-next" data-next>Next →</button></div>
+      </div>
+    </section>
+
+    <!-- ============ FORMULA & RESULTS ============ -->
+    <section class="view" id="view-results" data-title="Formula &amp; results">
+      <div class="sheet">
+        <h1 class="page-h">Formula &amp; results</h1>
+        <div class="formula-pair">
+          <div class="formula-card"><div class="big-eq">V = <span class="frac"><span>4</span><span>3</span></span>π<span class="paren">(</span><span class="frac"><span>d</span><span>2</span></span><span class="paren">)</span><sup>3</sup></div><p>volume of the sphere, cm³</p></div>
+          <div class="formula-card"><div class="big-eq">ρ = <span class="frac"><span>m</span><span>V</span></span></div><p>density, g/cm³</p></div>
+        </div>
+
+        <h2 class="sub-h">Worked example</h2>
+        <p class="lede">Example readings for a steel ball of about 12.7 mm, with zero error nil. Each trial turns the ball to a new position.</p>
+        <div class="obs-head"><span>Observation</span><span>L.C = 0.01 mm</span></div>
+        <div class="table-wrap">
+          <table class="obs hand" id="res-table">
+            <thead><tr><th>S.No</th><th>PSR<span class="u">mm</span></th><th>HSR<span class="u">div</span></th><th>HSR × L.C<span class="u">mm</span></th><th>Diameter d = PSR + (HSR × L.C)<span class="u">mm</span></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="mean-box"><div>Mean (d) = <b>12.704 mm</b></div><div>d = 12.704 ÷ 10 = <b>1.2704 cm</b></div></div>
+        <div class="spread"><svg id="spread-svg" viewBox="0 0 760 210" role="img" aria-label="The five diameters plotted around their mean"></svg></div>
+
+        <h2 class="sub-h">Calculation</h2>
+        <div class="calc">
+          <div class="calc-step"><span class="cs-n">1</span><div><strong>Mean diameter</strong>
+            <span class="eq-line">d = (12.70 + 12.71 + 12.69 + 12.72 + 12.70) ÷ 5 = 63.52 ÷ 5 = <b>12.704 mm</b></span></div></div>
+          <div class="calc-step hi"><span class="cs-n">2</span><div><strong>Millimetres to centimetres</strong> (10 mm = 1 cm)
+            <span class="eq-line">d = 12.704 mm ÷ 10 = <b>1.2704 cm</b></span></div></div>
+          <div class="calc-step"><span class="cs-n">3</span><div><strong>Radius</strong>
+            <span class="eq-line">r = d ÷ 2 = 1.2704 ÷ 2 = <b>0.6352 cm</b></span></div></div>
+          <div class="calc-step"><span class="cs-n">4</span><div><strong>Volume</strong>
+            <span class="eq-line">V = (4/3) π r³ = 4.1888 × 0.6352³ = 4.1888 × 0.25629 = <b>1.074 cm³</b></span></div></div>
+          <div class="calc-step"><span class="cs-n">5</span><div><strong>Mass</strong> from the balance
+            <span class="eq-line">m = <b>8.38 g</b></span></div></div>
+          <div class="calc-step"><span class="cs-n">6</span><div><strong>Density</strong>
+            <span class="eq-line">ρ = m ÷ V = 8.38 ÷ 1.074 = <b>7.80 g/cm³</b></span></div></div>
+          <div class="calc-step result"><span class="cs-n">✓</span><div><strong>Result</strong>
+            <span class="eq-line">Volume of the sphere V ≈ <b>1.074 cm³</b></span>
+            <span class="eq-line">Density of the sphere ρ ≈ <b>7.80 g/cm³</b></span>
+            <span class="sub">close to the density of steel, about 7.8 g/cm³</span></div></div>
+        </div>
+
+        <h2 class="sub-h">Common slips</h2>
+        <div class="slips">
+          <div class="slip"><h3>d left in millimetres</h3><p>Using 12.704 instead of 1.2704 makes V 1000 times too big (1074 instead of 1.074), so the density comes out 1000 times too small.</p></div>
+          <div class="slip"><h3>Diameter instead of radius</h3><p>(4/3)π d³ is 8 times (4/3)π r³, because (2r)³ = 8r³. The volume is 8 times too big.</p></div>
+          <div class="slip"><h3>Forgetting the cube</h3><p>(4/3)π r² has the wrong units (cm²) and here gives 1.69 instead of 1.074.</p></div>
+          <div class="slip"><h3>Density upside down</h3><p>V ÷ m = 0.128 is volume per gram. Density is mass per volume: m ÷ V.</p></div>
+          <div class="slip"><h3>Missing a half-mark</h3><p>With a half-millimetre mark showing, PSR is 12.5, not 12. Missing it makes every reading 0.5 mm small.</p></div>
+          <div class="slip"><h3>HSR as millimetres</h3><p>An HSR of 20 means 20 divisions = 0.20 mm. Adding 20 mm would be far off.</p></div>
+        </div>
+        <div class="page-end"><button type="button" class="btn-next" data-next>Next →</button></div>
+      </div>
+    </section>
+
+    <!-- ============ MCQs ============ -->
+    <section class="view" id="view-mcq" data-title="MCQs">
+      <div class="sheet">
+        <h1 class="page-h">Check understanding</h1>
+        <div class="mcq-bar">
+          <div class="mcq-score" id="mcq-score">0 correct</div>
+          <button type="button" class="btn-quiet" id="mcq-reset">Reset &amp; reshuffle</button>
+        </div>
+        <ol class="mcq-list" id="mcq-list"></ol>
+        <div class="page-end"><button type="button" class="btn-next" data-next>Next →</button></div>
+      </div>
+    </section>
+
+    <!-- ============ PRACTICAL ============ -->
+    <section class="view" id="view-practical" data-title="Practical">
+      <div class="sheet wide">
+        <h1 class="page-h">Practical</h1>
+        <div class="prac-intro">
+          <p class="lede">Check the zero, place a ball between the anvil and the spindle, close with the ratchet and read the two scales. Record five trials, weigh the ball, then work out its volume and density.</p>
+          <button type="button" class="btn-tut" id="tut-start"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M6 4l10 6-10 6z" fill="currentColor"/></svg>Start tutorial</button>
+        </div>
+
+        <div class="rig-frame" id="rig-frame">
+          <svg id="rig" viewBox="0 0 960 650" role="img" aria-label="A micrometer screw gauge above a tray of four numbered dishes holding balls, and a digital balance"></svg>
+        </div>
+        <div class="rig-msg" id="rig-msg" aria-live="polite">Drag the thimble up or down (or scroll over it) to turn it. Drag a ball from its dish into the jaws, or onto the balance pan.</div>
+
+        <div class="prac-mid">
+          <div class="panel" id="mag-panel">
+            <div class="panel-head"><h2 class="panel-h">Magnifier</h2><span class="panel-tag">sleeve and thimble at the datum line</span></div>
+            <div class="mag-wrap"><svg id="mag" viewBox="0 0 600 300" role="img" aria-label="Magnified view of the main scale and thimble scale"></svg></div>
+          </div>
+          <div class="panel" id="ctl-panel">
+            <h2 class="panel-h">Controls</h2>
+            <p class="ctl-help"><b>Thimble:</b> drag it up or down, scroll over it, or select it and use the arrow keys (Shift for a whole turn). A fast drag turns it quickly.</p>
+            <div class="ctl-btns">
+              <button type="button" class="btn-ratchet" id="c-ratchet">Ratchet <small>hold to close</small></button>
+              <button type="button" class="toggle" id="c-lock" aria-pressed="false"><span class="tg-track" aria-hidden="true"><span class="tg-knob"></span></span>Lock</button>
+            </div>
+            <div class="ctl-btns">
+              <button type="button" class="btn-quiet" id="c-turn">Turn the ball</button>
+              <button type="button" class="btn-quiet" id="c-zero">Check zero</button>
+            </div>
+            <div class="zero-stat" id="zero-stat">Zero error: <b>not checked</b></div>
+          </div>
+        </div>
+
+        <div class="prac-lower">
+          <div class="panel" id="tbl-panel">
+            <div class="panel-head">
+              <h2 class="panel-h">Observation</h2>
+              <span class="panel-tag mono">L.C = 0.01 mm</span>
+            </div>
+            <div class="rec-row" id="rec-row">
+              <div class="rf"><label for="in-psr">PSR <span class="u">mm</span></label><input type="text" inputmode="decimal" id="in-psr" autocomplete="off"></div>
+              <div class="rf"><label for="in-hsr">HSR <span class="u">div</span></label><input type="text" inputmode="numeric" id="in-hsr" autocomplete="off"></div>
+              <button type="button" class="btn-main" id="btn-rec">Record</button>
+              <button type="button" class="btn-quiet sm" id="btn-undo">Delete last row</button>
+            </div>
+            <p class="rec-msg" id="rec-msg" aria-live="polite"></p>
+            <div class="tut-formula" id="tut-formula" hidden></div>
+            <div class="table-wrap">
+              <table class="obs small" id="p-table">
+                <thead><tr><th>S.No</th><th>PSR<span class="u">mm</span></th><th>HSR<span class="u">div</span></th><th>HSR × L.C<span class="u">mm</span></th><th>d = PSR + (HSR × L.C)<span class="u">mm</span></th></tr></thead>
+                <tbody id="p-tbody"></tbody>
+              </table>
+            </div>
+            <div class="mean-box" id="p-mean" hidden></div>
+          </div>
+
+          <div class="panel" id="calc-panel">
+            <h2 class="panel-h">Calculation</h2>
+            <div class="calc-rows">
+              <div class="cr" id="cr-mean"><label>Mean diameter d <span class="u">mm</span></label><div class="fixed" id="fx-mean">—</div><div class="cr-sub">mean of the five trials</div></div>
+              <div class="cr" id="cr-dcm"><label for="in-dcm">d in centimetres <span class="u">cm</span></label><input type="text" inputmode="decimal" id="in-dcm" autocomplete="off"><div class="cr-sub">d (cm) = d (mm) ÷ 10</div><div class="cr-work" id="w-dcm"></div></div>
+              <div class="cr" id="cr-r"><label for="in-r">Radius r = d ÷ 2 <span class="u">cm</span></label><input type="text" inputmode="decimal" id="in-r" autocomplete="off"><div class="cr-work" id="w-r"></div></div>
+              <div class="cr" id="cr-v"><label for="in-v">Volume V = (4/3) π (d/2)³ <span class="u">cm³</span></label><input type="text" inputmode="decimal" id="in-v" autocomplete="off"><div class="cr-work" id="w-v"></div></div>
+              <div class="cr" id="cr-m"><label for="in-m">Mass m <span class="u">g</span></label><input type="text" inputmode="decimal" id="in-m" autocomplete="off"><div class="cr-sub">from the balance</div><div class="cr-work" id="w-m"></div></div>
+              <div class="cr" id="cr-rho"><label for="in-rho">Density ρ = m ÷ V <span class="u">g/cm³</span></label><input type="text" inputmode="decimal" id="in-rho" autocomplete="off"><div class="cr-work" id="w-rho"></div></div>
+            </div>
+            <div class="calc-actions">
+              <button type="button" class="btn-main" id="btn-check">Check</button>
+            </div>
+            <p class="check-msg" id="check-msg" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="prac-foot">
+          <button type="button" class="btn-quiet" id="btn-reset">Start over</button>
+        </div>
+
+        <div class="extras" id="extras">
+          <div class="extras-panel" id="extras-panel" role="region" aria-label="Optional extras">
+            <a href="https://grokipedia.com/page/Micrometer_(device)" target="_blank" rel="noopener">Grokipedia: Micrometer (device)</a>
+            <a href="https://grokipedia.com/page/Density" target="_blank" rel="noopener">Grokipedia: Density</a>
+            <a href="https://www.youtube.com/watch?v=rt34975CpKM" target="_blank" rel="noopener">Video: Reading a Micrometer Screw Gauge (Physics)</a>
+          </div>
+          <button type="button" class="extras-toggle" id="extras-toggle" aria-expanded="false" aria-controls="extras-panel">Optional extras</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="tut-bar" id="tut-bar" hidden role="status" aria-live="polite">
+  <div class="tut-main"><div class="tut-title" id="tut-title"></div><div class="tut-text" id="tut-text"></div><div class="tut-f" id="tut-f"></div></div>
+  <div class="tut-ctl"><button type="button" class="tut-btn" id="tut-skip">Skip step</button><button type="button" class="tut-btn stop" id="tut-stop">Stop</button></div>
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>
