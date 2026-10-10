@@ -2,6 +2,11 @@
 (function () {
   'use strict';
 
+  /* tutorial clock: virtual milliseconds that stop while paused and run faster at higher speed */
+  const TC = { speed: 1, paused: false, base: 0, at: performance.now() };
+  function tnow() { const n = performance.now(); if (!TC.paused) TC.base += (n - TC.at) * TC.speed; TC.at = n; return TC.base; }
+  function tcSet(o) { tnow(); Object.assign(TC, o); }
+
   /* =====================================================================
      1. CONSTANTS + HELPERS
      ===================================================================== */
@@ -796,7 +801,7 @@
     function pop() {
       const x = G.Z0 + st.x * S + 14.1 * S;
       const t = txt(fx, x, CY - G.rr - 10, 'click', { 'text-anchor': 'middle', 'font-family': F_HEAD, 'font-weight': 700, 'font-size': 16, fill: '#e8620c' });
-      if (t.animate) t.animate([{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-16px)' }], { duration: 650, easing: 'ease-out' }).onfinish = () => t.remove();
+      if (t.animate) { const an = t.animate([{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-16px)' }], { duration: 650, easing: 'ease-out' }); an.playbackRate = TC.speed; an.onfinish = () => t.remove(); }
       else setTimeout(() => t.remove(), 650);
     }
 
@@ -926,9 +931,9 @@
     /* ---------- moving balls ---------- */
     function tween(b, x, y, ms, ease) {
       return new Promise(res => {
-        const x0 = b.x, y0 = b.y, t0 = performance.now();
-        const f = now => {
-          let k = Math.min(1, (now - t0) / ms); if (tut.on && tut.skip) k = 1;
+        const x0 = b.x, y0 = b.y, t0 = tnow();
+        const f = () => {
+          let k = Math.min(1, (tnow() - t0) / ms); if (tut.on && tut.skip) k = 1;
           const e = ease ? ease(k) : (k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
           b.x = x0 + (x - x0) * e; b.y = y0 + (y - y0) * (ease ? k : e); if (ease) b.y = y0 + (y - y0) * ease(k);
           placeBall(b);
@@ -967,11 +972,11 @@
     }
     function weighDisplay() {
       const target = (st.pan ? st.pan.m : 0) - st.tare;
-      const start = st.shown, t0 = performance.now(), ms = 750;
+      const start = st.shown, t0 = tnow(), ms = 750;
       const tok = (weighDisplay.tok = (weighDisplay.tok || 0) + 1);
-      const f = now => {
+      const f = () => {
         if (tok !== weighDisplay.tok) return;
-        const k = Math.min(1, (now - t0) / ms);
+        const k = Math.min(1, (tnow() - t0) / ms);
         const jit = k < 1 ? (Math.random() - .5) * .06 * (1 - k) : 0;
         st.shown = start + (target - start) * (1 - Math.pow(1 - k, 3)) + jit;
         BAL.disp.textContent = (Math.abs(st.shown) < .005 ? 0 : st.shown).toFixed(2);
@@ -1046,8 +1051,8 @@
       if (!b) { say('Place a ball between the anvil and the spindle first.', 'warn'); return false; }
       if (st.x < b.dt + .05) { say('Open the thimble slightly first (about one turn) so the ball can turn freely.', 'warn'); return false; }
       newOrientation(b);
-      const r0 = b.rot, r1 = r0 + 55 + Math.random() * 50, t0 = performance.now();
-      const f = now => { const k = Math.min(1, (now - t0) / 600); b.rot = r0 + (r1 - r0) * k; placeBall(b); if (k < 1) requestAnimationFrame(f); };
+      const r0 = b.rot, r1 = r0 + 55 + Math.random() * 50, t0 = tnow();
+      const f = () => { const k = Math.min(1, (tnow() - t0) / 600); b.rot = r0 + (r1 - r0) * k; placeBall(b); if (k < 1) requestAnimationFrame(f); };
       requestAnimationFrame(f);
       apply();
       say(`Ball ${b.n} turned to a new position. Close again with the ratchet for the next reading.`);
@@ -1222,12 +1227,43 @@
       hiSvg.kind = kind;
     }
     const tut = { on: false, cancel: false, skip: false };
+    const btnPause = $('tut-pause'), selSpeed = $('tut-speed');
+    let pausedAnims = [];
+    function setPaused(p) {
+      tcSet({ paused: p });
+      btnPause.classList.toggle('paused', p); btnPause.setAttribute('aria-pressed', p ? 'true' : 'false');
+      btnPause.querySelector('.tl').textContent = p ? 'Resume' : 'Pause';
+      btnPause.title = p ? 'Resume (Space)' : 'Pause (Space)';
+      document.body.classList.toggle('tut-paused', p);
+      if (p) { pausedAnims = document.getAnimations().filter(a => a.playState === 'running'); pausedAnims.forEach(a => a.pause()); }
+      else { pausedAnims.forEach(a => { try { a.play(); } catch (_) { /* finished */ } }); pausedAnims = []; }
+    }
+    function resetPlayback() { setPaused(false); tcSet({ speed: 1 }); selSpeed.value = '1'; }
+    btnPause.addEventListener('click', () => { if (tut.on) setPaused(!TC.paused); });
+    selSpeed.addEventListener('change', () => { tcSet({ speed: +selSpeed.value || 1 }); });
+    document.addEventListener('keydown', e => {
+      if (!tut.on || e.code !== 'Space' || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.target.closest && e.target.closest('input, select, textarea, button, a, [role="button"], [role="slider"], [tabindex]')) return;
+      e.preventDefault(); setPaused(!TC.paused);
+    });
+    function tScroll(y) {
+      return new Promise(res => {
+        const y0 = window.scrollY, t0 = tnow(), ms = Math.min(900, 250 + Math.abs(y - y0) * .5);
+        (function f() {
+          if (tut.cancel) return res();
+          let k = Math.min(1, (tnow() - t0) / ms); if (tut.skip) k = 1;
+          const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+          window.scrollTo({ top: y0 + (y - y0) * e, behavior: 'instant' });
+          if (k < 1) requestAnimationFrame(f); else res();
+        })();
+      });
+    }
     const bar = $('tut-bar'), tTitle = $('tut-title'), tText = $('tut-text'), tF = $('tut-f'), tForm = $('tut-formula'), btnTut = $('tut-start');
     const STOP = new Error('tutorial-stop');
     function wait(ms) {
       return new Promise((res, rej) => {
-        const t0 = performance.now();
-        (function chkW() { if (tut.cancel) return rej(STOP); if (tut.skip || performance.now() - t0 >= ms) return res(); setTimeout(chkW, 25); })();
+        const t0 = tnow();
+        (function chkW() { if (tut.cancel) return rej(STOP); if (tut.skip || tnow() - t0 >= ms) return res(); setTimeout(chkW, 25); })();
       });
     }
     function step(title, text, f) { tut.skip = false; tTitle.textContent = title; tText.textContent = text; tF.innerHTML = f || ''; }
@@ -1236,7 +1272,7 @@
     async function scrollToEl(elm) {
       const r = elm.getBoundingClientRect();
       const y = window.scrollY + r.top - Math.max(60, (window.innerHeight - Math.min(r.height, window.innerHeight - 200)) / 2 - 70);
-      window.scrollTo({ top: Math.max(0, y), behavior: tut.skip ? 'auto' : 'smooth' });
+      tScroll(Math.max(0, y));
       await wait(800);
     }
     async function typeInto(inp, value, perChar) {
@@ -1246,11 +1282,11 @@
       inp.blur();
     }
     async function turnTo(target, ms) {
-      const v0 = st.v, t0 = performance.now();
+      const v0 = st.v, t0 = tnow();
       hiSvg('thimble');
       for (;;) {
         if (tut.cancel) throw STOP;
-        let k = Math.min(1, (performance.now() - t0) / ms); if (tut.skip) k = 1;
+        let k = Math.min(1, (tnow() - t0) / ms); if (tut.skip) k = 1;
         const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
         st.v = v0 + (target - v0) * e; apply(); hiSvg('thimble');
         if (k >= 1) break;
@@ -1260,9 +1296,11 @@
     async function ratchetIn(n) {
       hiSvg('ratchet');
       const c = contact();
+      let t = tnow();
       while (st.v > c + 1e-9) {
         if (tut.cancel) throw STOP;
-        st.v = Math.max(c, st.v - (tut.skip ? 1 : .006)); apply(); hiSvg('ratchet');
+        const n = tnow(), dt = n - t; t = n;
+        if (dt > 0 || tut.skip) { st.v = Math.max(c, st.v - (tut.skip ? 1 : .000375 * dt)); apply(); } hiSvg('ratchet');
         await sleep(16);
       }
       for (let i = 0; i < n; i++) { st.gest = true; click(); await wait(320); }
@@ -1358,7 +1396,7 @@
       } catch (e) {
         if (e !== STOP) throw e;
       } finally {
-        tut.on = false; tut.skip = false; hi(); hiSvg(null); MG.hi(null); tForm.hidden = true; st.force = [];
+        tut.on = false; tut.skip = false; resetPlayback(); hi(); hiSvg(null); MG.hi(null); tForm.hidden = true; st.force = [];
         BALLS.forEach(bb => { if (bb.loc === 'anim') { bb.loc = 'dish'; bb.x = bb.hx; bb.y = bb.hy; placeBall(bb); } });
         freeState();
         document.body.classList.remove('tut-on'); bar.hidden = true; btnTut.disabled = false;
