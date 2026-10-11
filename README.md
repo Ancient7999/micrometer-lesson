@@ -21,7 +21,7 @@ Live site: https://sonicunligmated.github.io/micrometer-lesson/
   - optional zero check;
   - typed PSR and HSR readings validated with hints; five trials and their mean;
   - weighing on the balance, then a stepwise calculation checked with tolerances and hints for common slips;
-  - a guided tutorial with Skip step and Stop, and Start over.
+  - a guided tutorial with Pause/Resume, playback speed, Previous step / Next step (← → keys) and Stop, and Start over.
 
 ## Example values
 
